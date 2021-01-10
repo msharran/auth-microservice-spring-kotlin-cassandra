@@ -1,7 +1,18 @@
 version: '3.1'
 services:
+  microservice:
+    container_name: auth_microservice
+    build:
+      context: .
+    image: auth_microservice:latest
+    expose:
+      - 10001
+    ports:
+      - 10001:10001
+    depends_on:
+      - database
   database:
     image: cassandra
     container_name: auth_db
     ports:
-      - "9043:9042"
+      - 9042:9042
