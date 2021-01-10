@@ -1,8 +1,8 @@
 package com.fireflies.auth_microservice.repository_service
 
-import com.fireflies.auth_microservice.context
 import com.fireflies.auth_microservice.model.UserCredential
 import com.fireflies.auth_microservice.response.ResourceNotFoundException
+import com.fireflies.auth_microservice.util.context
 import org.springframework.beans.factory.getBean
 import org.springframework.data.cassandra.repository.CassandraRepository
 import org.springframework.stereotype.Repository

@@ -1,9 +1,9 @@
 package com.fireflies.auth_microservice.configuration
 
+import com.fireflies.auth_microservice.AppProperties
 import com.fireflies.auth_microservice.repository_service.UserCredentialRepository
 import com.fireflies.auth_microservice.security.LoginFilter
 import com.fireflies.auth_microservice.security.AuthorizationFilter
-import com.fireflies.auth_microservice.security.JwtProperties
 import com.fireflies.auth_microservice.security.UserPrincipalDetailsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -32,8 +32,8 @@ class SecurityConfiguration(private val userPrincipalDetailsService: UserPrincip
             .addFilter(getJWTAuthenticationFilter())
             .addFilter(AuthorizationFilter(authenticationManager(), userRepository))
             .authorizeRequests() // configure access rules
-            .antMatchers(*JwtProperties.AUTHORIZATION_IGNORED_ENDPOINTS).permitAll()
-            .antMatchers(JwtProperties.ADMIN_ENDPOINTS).hasRole("ADMIN")
+            .antMatchers(*AppProperties.Security.AUTHORIZATION_IGNORED_ENDPOINTS).permitAll()
+            .antMatchers(AppProperties.Security.ADMIN_ENDPOINTS).hasRole("ADMIN")
             .anyRequest().authenticated()
     }
 
@@ -53,7 +53,7 @@ class SecurityConfiguration(private val userPrincipalDetailsService: UserPrincip
     @Bean
     fun getJWTAuthenticationFilter(): LoginFilter {
         val filter = LoginFilter(authenticationManager())
-        filter.setFilterProcessesUrl(JwtProperties.LOGIN_ENDPOINT)
+        filter.setFilterProcessesUrl(AppProperties.Security.LOGIN_ENDPOINT)
         return filter
     }
 }

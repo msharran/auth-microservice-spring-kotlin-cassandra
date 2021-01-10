@@ -2,6 +2,7 @@ package com.fireflies.auth_microservice.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm.HMAC512
+import com.fireflies.auth_microservice.AppProperties
 import com.fireflies.auth_microservice.response.UnAuthorizedException
 import com.fireflies.auth_microservice.payload.LoginPayload
 import com.fireflies.auth_microservice.repository_service.UserCredentialService
@@ -59,11 +60,9 @@ class LoginFilter(authenticationManager: AuthenticationManager) :
         val principal: UserPrincipal = authResult.principal as UserPrincipal
         val token = JWT.create()
             .withSubject(principal.username)
-            .sign(HMAC512(JwtProperties.SECRET.toByteArray()))
+            .sign(HMAC512(AppProperties.Security.SECRET.toByteArray()))
         val json = objectMapper.writeValueAsString(
-            APIResponse(
-            UserCredentialService().saveToken(principal.user, token)
-        )
+            APIResponse(data = UserCredentialService().saveToken(principal.user, token))
         )
         response.writer.append(json)
     }
@@ -81,7 +80,7 @@ class LoginFilter(authenticationManager: AuthenticationManager) :
         }
 
         private fun unAuthorizedResponse(exception: AuthenticationException): String {
-            return JSONObject(APIResponse(exception.localizedMessage)).toString()
+            return JSONObject(APIResponse(data = exception.localizedMessage)).toString()
         }
     }
 }

@@ -2,6 +2,7 @@ package com.fireflies.auth_microservice.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.fireflies.auth_microservice.AppProperties
 import com.fireflies.auth_microservice.model.UserCredential
 import com.fireflies.auth_microservice.repository_service.UserCredentialRepository
 import org.springframework.security.authentication.AuthenticationManager
@@ -18,8 +19,8 @@ class AuthorizationFilter(authenticationManager: AuthenticationManager, private 
 
     @Throws(Exception::class)
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
-        val header = request.getHeader(JwtProperties.AUTHORIZATION)
-        if (header == null || !header.startsWith(JwtProperties.BEARER_)) {
+        val header = request.getHeader(AppProperties.Security.AUTHORIZATION)
+        if (header == null || !header.startsWith(AppProperties.Security.BEARER_)) {
             chain.doFilter(request, response)
             return
         }
@@ -29,8 +30,8 @@ class AuthorizationFilter(authenticationManager: AuthenticationManager, private 
     }
 
     private fun getUsernamePasswordAuthentication(request: HttpServletRequest): Authentication? {
-        val token = request.getHeader(JwtProperties.AUTHORIZATION).replace(JwtProperties.BEARER_, "")
-        val username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET.toByteArray()))
+        val token = request.getHeader(AppProperties.Security.AUTHORIZATION).replace(AppProperties.Security.BEARER_, "")
+        val username = JWT.require(Algorithm.HMAC512(AppProperties.Security.SECRET.toByteArray()))
             .build()
             .verify(token)
             .subject

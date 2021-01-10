@@ -24,15 +24,15 @@ class CassandraConfiguration : AbstractCassandraConfiguration() {
     }
 
     override fun getKeyspaceName(): String {
-        return AppProperties.MICROSERVICE_NAME
+        return AppProperties.Cassandra.KEYSPACE_NAME
     }
 
     override fun getContactPoints(): String {
-        return AppProperties.CASANDRA_NODES
+        return AppProperties.Cassandra.NODES
     }
 
     override fun getEntityBasePackages(): Array<String> {
-        return arrayOf("com.fireflies.auth_microservice.model")
+        return AppProperties.Cassandra.MODELS
     }
 
     override fun getKeyspaceCreations(): List<CreateKeyspaceSpecification> {
@@ -45,8 +45,8 @@ class CassandraConfiguration : AbstractCassandraConfiguration() {
     private val keySpaceSpecification: CreateKeyspaceSpecification
         get() {
             return CreateKeyspaceSpecification
-                .createKeyspace(AppProperties.MICROSERVICE_NAME)
+                .createKeyspace(AppProperties.Cassandra.KEYSPACE_NAME)
                 .ifNotExists()
-                .withSimpleReplication(1L)
+                .withSimpleReplication(AppProperties.Cassandra.REPLICATION_FACTOR)
         }
 }
