@@ -1,12 +1,10 @@
 version: '3.1'
 services:
   microservice:
-    container_name: auth_microservice
+    container_name: auth_microservice_container
     build:
       context: .
-    image: auth_microservice:latest
-    expose:
-      - 10001
+    image: auth_microservice_image
     ports:
       - 10001:10001
     depends_on:

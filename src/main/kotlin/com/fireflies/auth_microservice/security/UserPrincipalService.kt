@@ -2,6 +2,7 @@ package com.fireflies.auth_microservice.security
 
 import com.fireflies.auth_microservice.model.UserCredential
 import com.fireflies.auth_microservice.repository_service.UserCredentialRepository
+import kotlinx.coroutines.runBlocking
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -12,7 +13,9 @@ class UserPrincipalDetailsService(private val userRepository: UserCredentialRepo
 
     @Throws(UsernameNotFoundException::class)
     override fun loadUserByUsername(s: String): UserDetails {
-        val user: UserCredential = userRepository.findByUsername(s).orElseThrow { UsernameNotFoundException("Username not found: $s") }
-        return UserPrincipal(user)
+        return runBlocking {
+            val user: UserCredential = userRepository.findByUsername(s) ?: throw UsernameNotFoundException("Username not found: $s")
+            UserPrincipal(user)
+        }
     }
 }

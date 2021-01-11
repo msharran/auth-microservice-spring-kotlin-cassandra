@@ -34,7 +34,7 @@ class AuthController {
 
     @GetMapping("/user")
     suspend fun getUser(@RequestParam(required = true) username: String): ResponseEntity<APIResponse<UserCredential>> = coroutineScope {
-        val user = service.findActiveUser(username = username) ?: throw BadRequestException("User logged out!")
+        val user = service.findActiveUser(username = username) ?: throw BadRequestException("User not found")
         responseOf(HttpStatus.OK) {
             user
         }

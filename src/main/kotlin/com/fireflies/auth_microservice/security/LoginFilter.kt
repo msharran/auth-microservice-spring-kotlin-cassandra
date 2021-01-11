@@ -8,6 +8,7 @@ import com.fireflies.auth_microservice.payload.LoginPayload
 import com.fireflies.auth_microservice.repository_service.UserCredentialService
 import com.fireflies.auth_microservice.response.APIResponse
 import com.fireflies.auth_microservice.util.objectMapper
+import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -61,9 +62,10 @@ class LoginFilter(authenticationManager: AuthenticationManager) :
         val token = JWT.create()
             .withSubject(principal.username)
             .sign(HMAC512(AppProperties.Security.SECRET.toByteArray()))
-        val json = objectMapper.writeValueAsString(
-            APIResponse(data = UserCredentialService().saveToken(principal.user, token))
-        )
+        val json = runBlocking {
+            val updatedUserCredential = UserCredentialService().saveToken(principal.user, token)
+            objectMapper.writeValueAsString(APIResponse(data = updatedUserCredential))
+        }
         response.writer.append(json)
     }
 
