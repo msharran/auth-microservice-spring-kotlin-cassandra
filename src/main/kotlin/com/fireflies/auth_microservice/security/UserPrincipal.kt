@@ -1,6 +1,6 @@
 package com.fireflies.auth_microservice.security
 
-import com.fireflies.auth_microservice.model.UserCredential
+import com.fireflies.auth_microservice.model.User
 
 import org.springframework.security.core.GrantedAuthority
 
@@ -9,7 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import java.util.*
 
 
-class UserPrincipal(val user: UserCredential) : UserDetails {
+class UserPrincipal(val user: User) : UserDetails {
     override fun getAuthorities(): Collection<GrantedAuthority> {
         val authorities: MutableList<GrantedAuthority> = ArrayList()
         val authority: GrantedAuthority = SimpleGrantedAuthority(user.role.name)

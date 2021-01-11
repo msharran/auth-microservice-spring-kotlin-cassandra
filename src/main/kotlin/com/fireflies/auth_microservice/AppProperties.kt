@@ -12,10 +12,6 @@ object AppProperties {
         val MODELS = arrayOf("com.fireflies.auth_microservice.model")
     }
 
-    object AuthService {
-        const val V1_BASE_URL = "http://localhost:10001/api/auth/v1"
-    }
-
     object Security {
         const val SECRET = "TheFirefliesJwtSecret"
         const val BEARER_ = "Bearer "

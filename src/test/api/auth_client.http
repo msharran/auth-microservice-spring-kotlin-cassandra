@@ -7,3 +7,15 @@ Content-Type: application/json
 }
 
 ###
+
+GET http://127.0.0.1:10001/api/auth/v1/user/sharran
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzaGFycmFuIn0.Rv7mV3KeKTQKU_YVoSBQFpSmXnGGDKB3I6aorFHqyDhrb05DGdYGe41w-_dJssvqlEMX90cYoDlyeZbHQPaxyA
+Accept: application/json
+
+###
+
+PUT http://127.0.0.1:10001/api/auth/v1/logout/sharran
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzaGFycmFuIn0.Rv7mV3KeKTQKU_YVoSBQFpSmXnGGDKB3I6aorFHqyDhrb05DGdYGe41w-_dJssvqlEMX90cYoDlyeZbHQPaxyA
+
+###

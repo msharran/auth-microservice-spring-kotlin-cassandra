@@ -3,21 +3,22 @@ package com.fireflies.auth_microservice.security
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.fireflies.auth_microservice.AppProperties
-import com.fireflies.auth_microservice.repository_service.UserCredentialRepository
+import com.fireflies.auth_microservice.repository_service.UserService
+import com.fireflies.auth_microservice.util.log
+import com.fireflies.auth_microservice.util.objectMapper
 import kotlinx.coroutines.runBlocking
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
-import java.util.*
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class AuthorizationFilter(
     authenticationManager: AuthenticationManager,
-    private val userRepository: UserCredentialRepository
+    private val userService: UserService
 ) : BasicAuthenticationFilter(authenticationManager) {
 
     @Throws(Exception::class)
@@ -34,18 +35,18 @@ class AuthorizationFilter(
 
     private fun getUsernamePasswordAuthentication(request: HttpServletRequest) = runBlocking<Authentication?> {
         val token = request.getHeader(AppProperties.Security.AUTHORIZATION).replace(AppProperties.Security.BEARER_, "")
-        val username = JWT.require(Algorithm.HMAC512(AppProperties.Security.SECRET.toByteArray()))
+        JWT.require(Algorithm.HMAC512(AppProperties.Security.SECRET.toByteArray()))
             .build()
             .verify(token)
             .subject
-        username?.let {
-            userRepository
-                .findByUsername(username)
-                ?.takeIf { it.isActive && it.isLoggedIn }
-                ?.let {
-                    val principal = UserPrincipal(it)
-                    UsernamePasswordAuthenticationToken(principal, null, principal.authorities)
-                }
-        }
+            .let { username ->
+                userService
+                    .findActiveUser(username)
+                    ?.takeIf { it.isLoggedIn }
+                    ?.let {
+                        val principal = UserPrincipal(it)
+                        UsernamePasswordAuthenticationToken(principal, null, principal.authorities)
+                    }
+            }
     }
 }

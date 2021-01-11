@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm.HMAC512
 import com.fireflies.auth_microservice.AppProperties
 import com.fireflies.auth_microservice.response.UnAuthorizedException
 import com.fireflies.auth_microservice.payload.LoginPayload
-import com.fireflies.auth_microservice.repository_service.UserCredentialService
+import com.fireflies.auth_microservice.repository_service.UserService
 import com.fireflies.auth_microservice.response.APIResponse
 import com.fireflies.auth_microservice.util.objectMapper
 import kotlinx.coroutines.runBlocking
@@ -31,7 +31,7 @@ class LoginFilter(authenticationManager: AuthenticationManager) :
         super.setAuthenticationFailureHandler(JwtAuthenticationFailureHandler())
     }
 
-    /** Trigger when we issue POST request to [JwtProperties.LOGIN_ENDPOINT]
+    /** Trigger when we issue POST request to [AppProperties.Security.LOGIN_ENDPOINT]
     We also need to pass in {"username":"janedoe@fireflies.com", "password":"doe123"} in the request body
      */
     @Throws(AuthenticationException::class)
@@ -63,7 +63,7 @@ class LoginFilter(authenticationManager: AuthenticationManager) :
             .withSubject(principal.username)
             .sign(HMAC512(AppProperties.Security.SECRET.toByteArray()))
         val json = runBlocking {
-            val updatedUserCredential = UserCredentialService().saveToken(principal.user, token)
+            val updatedUserCredential = UserService().login(principal.user, token)
             objectMapper.writeValueAsString(APIResponse(data = updatedUserCredential))
         }
         response.writer.append(json)

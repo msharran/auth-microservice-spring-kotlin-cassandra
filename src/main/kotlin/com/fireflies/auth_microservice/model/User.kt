@@ -9,7 +9,7 @@ import java.util.*
 
 
 @Table
-data class UserCredential(
+data class User(
     @JsonIgnore
     var password: String,
 

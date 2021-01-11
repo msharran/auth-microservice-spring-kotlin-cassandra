@@ -1,7 +1,7 @@
 package com.fireflies.auth_microservice.configuration
 
 import com.fireflies.auth_microservice.AppProperties
-import com.fireflies.auth_microservice.repository_service.UserCredentialRepository
+import com.fireflies.auth_microservice.repository_service.UserService
 import com.fireflies.auth_microservice.security.LoginFilter
 import com.fireflies.auth_microservice.security.AuthorizationFilter
 import com.fireflies.auth_microservice.security.UserPrincipalDetailsService
@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfiguration(private val userPrincipalDetailsService: UserPrincipalDetailsService, private val userRepository: UserCredentialRepository): WebSecurityConfigurerAdapter() {
+class SecurityConfiguration(private val userPrincipalDetailsService: UserPrincipalDetailsService, private val userService: UserService): WebSecurityConfigurerAdapter() {
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.authenticationProvider(authenticationProvider())
     }
@@ -30,7 +30,7 @@ class SecurityConfiguration(private val userPrincipalDetailsService: UserPrincip
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and() // add jwt filters (1. authentication, 2. authorization)
             .addFilter(getJWTAuthenticationFilter())
-            .addFilter(AuthorizationFilter(authenticationManager(), userRepository))
+            .addFilter(AuthorizationFilter(authenticationManager(), userService))
             .authorizeRequests() // configure access rules
             .antMatchers(*AppProperties.Security.AUTHORIZATION_IGNORED_ENDPOINTS).permitAll()
             .antMatchers(AppProperties.Security.ADMIN_ENDPOINTS).hasRole("ADMIN")

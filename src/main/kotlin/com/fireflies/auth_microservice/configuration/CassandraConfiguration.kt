@@ -2,16 +2,18 @@ package com.fireflies.auth_microservice.configuration
 
 import com.fireflies.auth_microservice.AppProperties
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.cassandra.config.AbstractCassandraConfiguration
+import org.springframework.data.cassandra.config.AbstractReactiveCassandraConfiguration
 import org.springframework.data.cassandra.config.SchemaAction
 import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification
 import org.springframework.data.cassandra.core.mapping.CassandraMappingContext
 import org.springframework.data.cassandra.core.mapping.NamingStrategy
+import org.springframework.data.cassandra.repository.config.EnableReactiveCassandraRepositories
 import java.util.*
 
 
 @Configuration
-class CassandraConfiguration : AbstractCassandraConfiguration() {
+@EnableReactiveCassandraRepositories
+class CassandraConfiguration : AbstractReactiveCassandraConfiguration() {
 
     override fun cassandraMapping(): CassandraMappingContext {
         val cassandraMapping = super.cassandraMapping()
